@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {GenresEnum} from "../helpers/interfaces";
+import {GenresEnum} from "../../helpers/interfaces";
 
 interface IconProps {
   name?: GenresEnum;

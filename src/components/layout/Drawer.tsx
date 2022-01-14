@@ -1,74 +1,49 @@
-import { useRef, useEffect } from "react";
+import {useRef, useEffect, ReactChild, RefObject} from "react";
 import { createPortal } from "react-dom";
-import useMountTransition from "./useMountTransition";
-import '../styles/drower.css';
+import useMountTransition from "../../hooks/useMountTransition";
 import styled, { css } from "styled-components";
+import { createPortalRoot } from "../../helpers/constants";
 
-function createPortalRoot() {
-    const drawerRoot = document.createElement("div");
-    drawerRoot.setAttribute("id", "drawer-root");
-
-    return drawerRoot;
+interface IDrawerProps {
+    isOpen: boolean,
+    children: ReactChild,
+    onClose: () => void
 }
 
-
-const Drawer = ({
-                    isOpen,
-                    children,
-                    onClose,
-                    removeWhenClosed = true
-                }: any) => {
-    const bodyRef: any = useRef(document.querySelector("body"));
+const Drawer = ({isOpen, children, onClose}: IDrawerProps) => {
+    const bodyRef: RefObject<HTMLBodyElement | undefined> = useRef(document.querySelector("body"));
     const portalRootRef = useRef(
         document.getElementById("drawer-root") || createPortalRoot()
     );
     const isTransitioning = useMountTransition(isOpen, 300);
 
-    // Append portal root on mount
     useEffect(() => {
+        if (!bodyRef.current) return;
         bodyRef.current.appendChild(portalRootRef.current);
         const portal = portalRootRef.current;
-        const bodyEl = bodyRef.current;
 
         return () => {
-            // Clean up the portal when drawer component unmounts
             portal.remove();
-            // Ensure scroll overflow is removed
-            bodyEl.style.overflow = "";
         };
     }, []);
 
-    // Prevent page scrolling when the drawer is open
-    useEffect(() => {
-        const updatePageScroll = () => {
-            if (isOpen) {
-                bodyRef.current.style.overflow = "hidden";
-            } else {
-                bodyRef.current.style.overflow = "";
-            }
-        };
+    // useEffect(() => {
+    //     const onKeyPress = (e: KeyboardEvent) => {
+    //         if (e.key === "Escape") {
+    //             onClose();
+    //         }
+    //     };
+    //
+    //     if (isOpen) {
+    //         window.addEventListener("keyup", onKeyPress);
+    //     }
+    //
+    //     return () => {
+    //         window.removeEventListener("keyup", onKeyPress);
+    //     };
+    // }, [isOpen, onClose]);
 
-        updatePageScroll();
-    }, [isOpen]);
-
-    // Allow Escape key to dismiss the drawer
-    useEffect(() => {
-        const onKeyPress = (e:any) => {
-            if (e.key === "Escape") {
-                onClose();
-            }
-        };
-
-        if (isOpen) {
-            window.addEventListener("keyup", onKeyPress);
-        }
-
-        return () => {
-            window.removeEventListener("keyup", onKeyPress);
-        };
-    }, [isOpen, onClose]);
-
-    if (!isTransitioning && removeWhenClosed && !isOpen) {
+    if (!isTransitioning && !isOpen) {
         return null;
     }
 
@@ -96,8 +71,8 @@ const DrawerContainer = styled.div<{isOpen:boolean, isTransitioning: boolean}>`
   
 `
 const SDrawer = styled.div<{isOpen: boolean, isTransitioning: boolean}>`
-  background: #fff;
-  width: 30%;
+  background: var(--background);
+  width: 70%;
   height: 100%;
   overflow: auto;
   position: fixed;

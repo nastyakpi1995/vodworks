@@ -1,12 +1,13 @@
 import styled from "styled-components";
-import {MovieProps} from "../helpers/interfaces";
-import MovieCard from "./MovieCard";
+import {MovieProps} from "../../helpers/interfaces";
+import MovieCard from "../common/MovieCard";
 
 interface ContentProps {
-  movies: MovieProps[]
+  movies: MovieProps[];
+  openDetailPopup: (movie: MovieProps) => void;
 }
 
-const Content = ({ movies }: ContentProps) => {
+const Content = ({ movies, openDetailPopup }: ContentProps) => {
   return (
     <Main>
       <MoviesList>
@@ -14,6 +15,7 @@ const Content = ({ movies }: ContentProps) => {
           <MovieCard
             key={movie.title}
             movie={movie}
+            openDetailPopup={() => openDetailPopup(movie)}
           />
         ))}
       </MoviesList>

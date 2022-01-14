@@ -1,13 +1,21 @@
 import { Clock } from 'react-feather';
 
 import styled from "styled-components";
-import { MovieCardProps } from '../helpers/interfaces';
+import {MovieProps} from '../../helpers/interfaces';
 
+export interface MovieCardProps {
+    movie: MovieProps;
+    openDetailPopup: () => void
+}
 
 const MovieCard = (props: MovieCardProps) => {
-    const {poster_path, title, release_date} = props.movie
+    const {openDetailPopup, movie: {poster_path, title, release_date}} = props
+    const onClick = () => {
+        openDetailPopup()
+    }
+
   return (
-    <Container>
+    <Container onClick={onClick}>
       <Img
         src={poster_path}
         alt={title}

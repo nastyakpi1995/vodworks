@@ -1,10 +1,15 @@
 import styled from "styled-components";
-import Icon from './Icon';
-import {ButtonProps} from "../helpers/interfaces";
+import Icon from '../other/Icon';
+import {GenresEnum} from "../../helpers/interfaces";
 
-const Button = ({ iconName, title, selected, ...rest }: ButtonProps) => {
+interface ButtonProps {
+    iconName: GenresEnum;
+    selected: boolean;
+    onClick: () => void;
+}
+const NavButton = ({ iconName, selected, onClick }: ButtonProps) => {
   return (
-    <SButton type="button" {...(selected && { className: 'selected' })} {...rest}>
+    <SButton type="button" {...(selected && { className: 'selected' })} onClick={onClick}>
       <ButtonContent>
         <Icon name={iconName} selected={selected} />
         <Title>
@@ -56,4 +61,4 @@ const Title = styled.div`
   text-transform: capitalize;
 `
 
-export default Button
+export default NavButton

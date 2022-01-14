@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 
 import styled from "styled-components";
-import { genresDataExample } from "../helpers/exampleDatas";
-import {GenreResponseProps, SidebarProps } from "../helpers/interfaces";
-import Button from "./Button";
+import { genresDataExample } from "../../helpers/exampleDatas";
+import {GenreResponseProps, GenresEnum} from "../../helpers/interfaces";
+import NavButton from "../common/NavButton";
 
+interface SidebarProps {
+    selectedGenreName: GenresEnum;
+    handleClickButton: (name: GenresEnum) => void;
+}
 const SideBar = ({ selectedGenreName, handleClickButton }: SidebarProps) => {
   const [filmGenres, setFilmGenres] = useState<GenreResponseProps[]>([]);
 
@@ -13,27 +17,26 @@ const SideBar = ({ selectedGenreName, handleClickButton }: SidebarProps) => {
   }, []);
 
   return (
-    <Sidebar>
+    <SSidebar>
       <Span>
         filmer
       </Span>
 
       <ButtonsContainer>
         {filmGenres.map((genre) => (
-          <Button
+          <NavButton
             key={String(genre.id)}
-            title={genre.name}
             iconName={genre.name}
             onClick={() => handleClickButton(genre.name)}
             selected={selectedGenreName === genre.name}
           />
         ))}
       </ButtonsContainer>
-    </Sidebar>
+    </SSidebar>
   );
 }
 
-const Sidebar = styled.nav`
+const SSidebar = styled.nav`
   display: flex;
   flex-direction: column;
   max-width: 384px;
