@@ -6,15 +6,15 @@ import {GenreResponseProps, GenresEnum} from "../../helpers/interfaces";
 import NavButton from "../common/NavButton";
 
 interface SidebarProps {
-    selectedGenreName: GenresEnum;
+    active: number;
     handleClickButton: (name: GenresEnum) => void;
 }
-const SideBar = ({ selectedGenreName, handleClickButton }: SidebarProps) => {
+const SideBar = ({ active, handleClickButton }: SidebarProps) => {
   const [filmGenres, setFilmGenres] = useState<GenreResponseProps[]>([]);
 
   useEffect(() => {
       setFilmGenres(genresDataExample)
-  }, []);
+  }, [active]);
 
   return (
     <SSidebar>
@@ -23,12 +23,12 @@ const SideBar = ({ selectedGenreName, handleClickButton }: SidebarProps) => {
       </Span>
 
       <ButtonsContainer>
-        {filmGenres.map((genre) => (
+        {filmGenres.map((genre, i) => (
           <NavButton
             key={String(genre.id)}
             iconName={genre.name}
             onClick={() => handleClickButton(genre.name)}
-            selected={selectedGenreName === genre.name}
+            selected={i === active}
           />
         ))}
       </ButtonsContainer>
