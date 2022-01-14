@@ -5,6 +5,7 @@ import SideBar from './components/SideBar';
 import Content from './components/Content';
 import {GenresEnum, MovieProps} from "./helpers/interfaces";
 import {fetchMoviesDataRequest} from "./helpers/apiCaller";
+import MovieDetails from "./components/MovieDetails";
 
 const App = () => {
     const [selectedGenreName, setSelectedGenreName] = useState(GenresEnum.action);
@@ -30,6 +31,7 @@ const App = () => {
         }, [])
         setMoviesFilter(filterMovies)
     }, [selectedGenreName])
+
     const handleClickButton = (name: GenresEnum) => {
         setSelectedGenreName(name);
     }
@@ -42,6 +44,9 @@ const App = () => {
           />
           <WrapContent>
               <Content movies={moviesFilter} />
+              {movies.length > 1 ? (
+                  <MovieDetails movie={movies[0]} />
+              ) : null}
           </WrapContent>
     </Container>
   );
