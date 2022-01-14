@@ -1,21 +1,37 @@
 import { Clock } from 'react-feather';
 
 import styled from "styled-components";
-import {MovieProps} from '../../helpers/interfaces';
+import {IMovieProps} from '../../helpers/interfaces';
+import {useEffect, useRef} from "react";
 
-export interface MovieCardProps {
-    movie: MovieProps;
-    openDetailPopup: () => void
+export interface IMovieCardProps {
+    movie: IMovieProps;
+    openDetailPopup: () => void;
+    active: boolean;
 }
 
-const MovieCard = (props: MovieCardProps) => {
-    const {openDetailPopup, movie: {poster_path, title, release_date}} = props
+const MovieCard = (props: IMovieCardProps) => {
+    const {openDetailPopup, active, movie: {poster_path, title, release_date}} = props
+
+    const ref = useRef<HTMLDivElement | any>()
+
+    useEffect(() => {
+        if (active) {
+            if (!ref.current) return;
+            ref.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest'
+            })
+        }
+    }, [active])
+
     const onClick = () => {
         openDetailPopup()
     }
 
   return (
-    <Container onClick={onClick}>
+    <Container onClick={onClick} active={active} ref={ref}>
       <Img
         src={poster_path}
         alt={title}
@@ -34,10 +50,11 @@ const MovieCard = (props: MovieCardProps) => {
   )
 }
 
-const Container = styled.div`
+const Container = styled.div<{ active: boolean }>`
   margin: 5px 5px;
   position: relative;
   cursor: pointer;
+  border: 2px solid ${({active}) => active ? 'orange' : 'transparent'}
 `
 const Img = styled.img`
   width: 228.96px;

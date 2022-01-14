@@ -1,6 +1,6 @@
-import {GenreResponseProps, GenresEnum} from "./interfaces";
+import {IGenreResponseProps, GenresEnum} from "./interfaces";
 
-export const genresDataExample: GenreResponseProps[] = [
+export const genresDataExample: IGenreResponseProps[] = [
     {id: 1, name: GenresEnum.action},
     {id: 2, name: GenresEnum.comedy},
     {id: 3, name: GenresEnum.drama},

@@ -10,12 +10,12 @@ export enum GenresEnum {
     all = "all movies",
 }
 
-export interface GenreResponseProps {
+export interface IGenreResponseProps {
     id: number;
     name: GenresEnum;
 }
 
-export interface MovieProps {
+export interface IMovieProps {
     poster_path: string;
     title: string;
     overview: string;
@@ -23,4 +23,10 @@ export interface MovieProps {
     genre_ids: string[];
 }
 
-
+export interface IState {
+    menu: {
+        activeMovieCard: number,
+        isMenuActive: boolean,
+        activeMenuIndex: number
+    }
+}

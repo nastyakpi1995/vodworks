@@ -1,33 +1,83 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {GenresEnum, MovieProps} from "../../helpers/interfaces";
+import React, {useEffect, useState} from 'react'
+import {GenresEnum, IMovieProps, IState} from "../../helpers/interfaces";
 import {fetchMoviesDataRequest} from "../../helpers/apiCaller";
 import SideBar from "./SideBar";
 import Content from "./Content";
 import MovieDetails from "./MovieDetails";
 import styled from "styled-components";
-import useKey from "../../hooks/useKey";
 import {genresDataExample} from "../../helpers/exampleDatas";
+import {useDispatch, useSelector} from "react-redux";
+import useKey from "@rooks/use-key";
+import {setActiveMenuIndex, setActiveMovieCard, setIsMenuActive} from "../../redux/reducers/menuReducer";
 
 const Layout = () => {
-    const [selectedGenreName, setSelectedGenreName] = useState(GenresEnum.action);
-    const [movies, setMovies] = useState<MovieProps[]>([]);
-    const [moviesFilter, setMoviesFilter] = useState<MovieProps[]>([]);
+    const [movies, setMovies] = useState<IMovieProps[]>([]);
+    const [moviesFilter, setMoviesFilter] = useState<IMovieProps[]>([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [currentMovie, setCurrentMovie] = useState<MovieProps | null>(null)
+    const [currentMovie, setCurrentMovie] = useState<IMovieProps | null>(null)
 
-    const [activeMenuIndex, setActiveMenuIndex] = useState(0)
-    const [isMenuActive, setIsMenuActive] = useState(true)
+    const dispatch = useDispatch();
+    const {activeMenuIndex, isMenuActive, activeMovieCard} = useSelector((state: IState) => state.menu)
 
-    useKey('ArrowDown', () => {
-        if (activeMenuIndex !== genresDataExample.length - 1) {
-            setActiveMenuIndex(prev => prev + 1)
+
+    useKey('ArrowDown', (e) => {
+        e.preventDefault()
+        if (isOpen) return;
+        if (isMenuActive) {
+            if (activeMenuIndex === genresDataExample.length - 1) {
+                dispatch(setActiveMenuIndex(0))
+            } else {
+                dispatch(setActiveMenuIndex(activeMenuIndex + 1))
+            }
+        } else {
+            if (moviesFilter.length - 1 - activeMovieCard >= 5) {
+                dispatch(setActiveMovieCard(activeMovieCard + 5))
+            }
         }
     })
-    useKey('ArrowUp', () => {
-        if (activeMenuIndex !== 0) {
-            setActiveMenuIndex(prev => prev - 1)
+    useKey('ArrowUp', (e) => {
+        e.preventDefault()
+        if (isOpen) return;
+        if (isMenuActive) {
+            if (activeMenuIndex === 0) {
+                dispatch(setActiveMenuIndex(genresDataExample.length - 1))
+            } else {
+                dispatch(setActiveMenuIndex(activeMenuIndex - 1))
+            }
+        } else {
+            if (activeMovieCard >= 5) {
+                dispatch(setActiveMovieCard(activeMovieCard - 5))
+            }
         }
-        console.log('up')
+
+    })
+    useKey('ArrowLeft', () => {
+        if (isOpen) return;
+        if (!isMenuActive && activeMovieCard === 0) {
+            dispatch(setIsMenuActive(true))
+        } else {
+            dispatch(setActiveMovieCard(activeMovieCard - 1))
+        }
+    })
+    useKey('ArrowRight', () => {
+        if (isOpen) return;
+        if (!moviesFilter.length) return;
+
+        if (isMenuActive) {
+            dispatch(setIsMenuActive(false))
+            dispatch(setActiveMovieCard(0))
+        } else {
+            dispatch(setActiveMovieCard(activeMovieCard + 1))
+        }
+    })
+
+    useKey('Enter', () => {
+        if (isMenuActive) return;
+        openDetailPopup(moviesFilter[activeMovieCard])
+    })
+
+    useKey('b', () => {
+        setIsOpen(false)
     })
 
     const toggleClose = () => {
@@ -41,27 +91,27 @@ const Layout = () => {
     }, []);
 
     useEffect(() => {
-        const filterMovies = movies.reduce((acc: MovieProps[], movie: MovieProps) => {
+        const filterMovies = movies.reduce((acc: IMovieProps[], movie: IMovieProps) => {
             const movieGenre = movie.genre_ids
             const prepareGenre = isCheckGenre(movieGenre, GenresEnum.all) ? movieGenre : [...movieGenre, GenresEnum.all];
-            if (isCheckGenre(prepareGenre, selectedGenreName)) {acc = [...acc, movie]}
+            if (isCheckGenre(prepareGenre, genresDataExample[activeMenuIndex].name)) {acc = [...acc, movie]}
             return acc
         }, [])
         setMoviesFilter(filterMovies)
-    }, [selectedGenreName])
+    }, [activeMenuIndex])
 
     useEffect(() => {
         setCurrentMovie(currentMovie)
     }, [currentMovie])
 
-    const openDetailPopup = (movie: MovieProps) => {
+    const openDetailPopup = (movie: IMovieProps) => {
         setCurrentMovie(movie)
         toggleClose()
     }
     const isCheckGenre = (array: string[], genre: GenresEnum) => array.some((el => el === genre))
 
-    const handleClickButton = (name: GenresEnum) => {
-        setSelectedGenreName(name);
+    const handleClickButton = (index: number) => {
+        dispatch(setActiveMenuIndex(index))
     }
 
     return (

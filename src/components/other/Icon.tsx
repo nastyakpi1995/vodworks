@@ -2,12 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import {GenresEnum} from "../../helpers/interfaces";
 
-interface IconProps {
+interface IIconProps {
   name?: GenresEnum;
   selected: boolean;
 }
 
-const Icon = (props: IconProps) => {
+const Icon = (props: IIconProps) => {
   const {selected, name} = props;
   switch (name) {
     case GenresEnum.action:

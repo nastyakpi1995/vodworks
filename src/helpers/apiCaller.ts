@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MovieProps } from "./interfaces";
+import { IMovieProps } from "./interfaces";
 
 export const api = axios.create({
    baseURL: 'https://raw.githubusercontent.com/bdiadiun/technical-assignments',
@@ -7,7 +7,7 @@ export const api = axios.create({
 
 export const fetchMoviesDataRequest = async () => {
     return api
-     .get<MovieProps[]>(`/main/movieDataCollection.json`)
+     .get<IMovieProps[]>(`/main/movieDataCollection.json`)
      .then((response) => response).catch(error => {
          const prepareProps = {
              data: [],

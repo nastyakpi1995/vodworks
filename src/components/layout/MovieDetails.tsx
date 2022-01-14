@@ -4,12 +4,12 @@ import Drawer from "./Drawer";
 import {formatDate} from "../../helpers/constants";
 import Button from "../common/Button";
 import {Play, PlusSquare} from "react-feather";
-import {MovieProps} from "../../helpers/interfaces";
+import {IMovieProps} from "../../helpers/interfaces";
 
 interface IMovieDetailsInner {
     isOpen: boolean;
     onClose: () => void;
-    movie: MovieProps
+    movie: IMovieProps
 }
 const MovieDetailsInner = ({ movie, isOpen, onClose }: IMovieDetailsInner) => {
     const {poster_path, title, overview, release_date, genre_ids} = movie
@@ -35,8 +35,8 @@ const MovieDetailsInner = ({ movie, isOpen, onClose }: IMovieDetailsInner) => {
                     <Information>
                         <Title>{title} ({formatDate(release_date)})</Title>
                         <Genres>
-                            {genre_ids.map(el => (
-                                <Genre>{el}</Genre>
+                            {genre_ids.map((el, index) => (
+                                <Genre key={index}>{el}</Genre>
                             ))}
                         </Genres>
                         <Overview>{overview}</Overview>

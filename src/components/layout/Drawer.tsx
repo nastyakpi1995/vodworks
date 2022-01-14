@@ -27,22 +27,6 @@ const Drawer = ({isOpen, children, onClose}: IDrawerProps) => {
         };
     }, []);
 
-    // useEffect(() => {
-    //     const onKeyPress = (e: KeyboardEvent) => {
-    //         if (e.key === "Escape") {
-    //             onClose();
-    //         }
-    //     };
-    //
-    //     if (isOpen) {
-    //         window.addEventListener("keyup", onKeyPress);
-    //     }
-    //
-    //     return () => {
-    //         window.removeEventListener("keyup", onKeyPress);
-    //     };
-    // }, [isOpen, onClose]);
-
     if (!isTransitioning && !isOpen) {
         return null;
     }

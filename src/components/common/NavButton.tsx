@@ -2,14 +2,15 @@ import styled from "styled-components";
 import Icon from '../other/Icon';
 import {GenresEnum} from "../../helpers/interfaces";
 
-interface ButtonProps {
+interface IButtonProps {
     iconName: GenresEnum;
     selected: boolean;
     onClick: () => void;
+    selectMemo: boolean;
 }
-const NavButton = ({ iconName, selected, onClick }: ButtonProps) => {
+const NavButton = ({ iconName, selected, onClick, selectMemo }: IButtonProps) => {
   return (
-    <SButton type="button" {...(selected && { className: 'selected' })} onClick={onClick}>
+    <SButton type="button" {...(selected && { className: 'selected' })} onClick={onClick} selectMemo={selectMemo}>
       <ButtonContent>
         <Icon name={iconName} selected={selected} />
         <Title>
@@ -21,14 +22,14 @@ const NavButton = ({ iconName, selected, onClick }: ButtonProps) => {
   );
 }
 
-const SButton = styled.button`
+const SButton = styled.button<{ selectMemo: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: 320px;
   width: 100%;
   border: 1px solid var(--background);
-  background: var(----transparent);
+  background: ${props => props.selectMemo ? 'var(--blue)' : 'var(----transparent)'};
   padding: 20px 15px;
   border-radius: 10px;
   font-size: 20px;
