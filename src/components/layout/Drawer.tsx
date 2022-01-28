@@ -34,10 +34,7 @@ const Drawer = ({isOpen, children, onClose}: IDrawerProps) => {
     return createPortal(
         <>
             <DrawerContainer
-                aria-hidden={isOpen ? "false" : "true"}
-                isTransitioning={isTransitioning}
-                isOpen={isOpen}
-            >
+                aria-hidden={isOpen ? "false" : "true"}>
                 <SDrawer isTransitioning={isTransitioning}
                          isOpen={isOpen} role="dialog">
                     {children}
@@ -50,7 +47,7 @@ const Drawer = ({isOpen, children, onClose}: IDrawerProps) => {
     );
 };
 
-const DrawerContainer = styled.div<{isOpen:boolean, isTransitioning: boolean}>`
+const DrawerContainer = styled.div`
   --transition-speed: 0.3s;
   
 `
@@ -75,7 +72,7 @@ const SDrawer = styled.div<{isOpen: boolean, isTransitioning: boolean}>`
 const Backdrop = styled.div<{isOpen: boolean, isTransitioning: boolean}>`
   visibility: hidden;
   opacity: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--black);
   transition: opacity var(--transition-speed) ease,
   visibility var(--transition-speed) ease;
   width: 100%;

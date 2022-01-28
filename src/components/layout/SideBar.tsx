@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import styled from "styled-components";
-import { genresDataExample } from "../../helpers/exampleDatas";
 import {IGenreResponseProps, IState} from "../../helpers/interfaces";
 import NavButton from "../common/NavButton";
 import {useSelector} from "react-redux";
@@ -9,15 +8,12 @@ import {useSelector} from "react-redux";
 interface ISidebarProps {
     active: number;
     handleClickButton: (i: number) => void;
+    moviesGenre: IGenreResponseProps[]
 }
-const SideBar = ({ active, handleClickButton }: ISidebarProps) => {
-  const [filmGenres, setFilmGenres] = useState<IGenreResponseProps[]>([]);
+const SideBar = ({ active, handleClickButton, moviesGenre }: ISidebarProps) => {
 
     const {isMenuActive} = useSelector((state: IState) => state.menu)
 
-  useEffect(() => {
-      setFilmGenres(genresDataExample)
-  }, [active]);
 
   return (
     <SSidebar>
@@ -26,7 +22,7 @@ const SideBar = ({ active, handleClickButton }: ISidebarProps) => {
       </Span>
 
       <ButtonsContainer>
-        {filmGenres.map((genre, i) => (
+        {moviesGenre.map((genre, i) => (
           <NavButton
             key={String(genre.id)}
             iconName={genre.name}

@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from 'react'
-import {GenresEnum, IMovieProps, IState} from "../../helpers/interfaces";
+import {IGenreResponseProps, IMovieProps, IState} from "../../helpers/interfaces";
 import {fetchMoviesDataRequest} from "../../helpers/apiCaller";
 import SideBar from "./SideBar";
 import Content from "./Content";
 import MovieDetails from "./MovieDetails";
 import styled from "styled-components";
-import {genresDataExample} from "../../helpers/exampleDatas";
 import {useDispatch, useSelector} from "react-redux";
 import useKey from "@rooks/use-key";
 import {setActiveMenuIndex, setActiveMovieCard, setIsMenuActive} from "../../redux/reducers/menuReducer";
+import { getFilterMovies, getGenderMovies} from '../../helpers/constants';
 
 const Layout = () => {
     const [movies, setMovies] = useState<IMovieProps[]>([]);
+    const [moviesGenre, setMoviesGenre] = useState<IGenreResponseProps[]>([]);
     const [moviesFilter, setMoviesFilter] = useState<IMovieProps[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [currentMovie, setCurrentMovie] = useState<IMovieProps | null>(null)
@@ -24,7 +25,7 @@ const Layout = () => {
         e.preventDefault()
         if (isOpen) return;
         if (isMenuActive) {
-            if (activeMenuIndex === genresDataExample.length - 1) {
+            if (activeMenuIndex === moviesGenre.length - 1) {
                 dispatch(setActiveMenuIndex(0))
             } else {
                 dispatch(setActiveMenuIndex(activeMenuIndex + 1))
@@ -40,7 +41,7 @@ const Layout = () => {
         if (isOpen) return;
         if (isMenuActive) {
             if (activeMenuIndex === 0) {
-                dispatch(setActiveMenuIndex(genresDataExample.length - 1))
+                dispatch(setActiveMenuIndex(moviesGenre.length - 1))
             } else {
                 dispatch(setActiveMenuIndex(activeMenuIndex - 1))
             }
@@ -49,7 +50,6 @@ const Layout = () => {
                 dispatch(setActiveMovieCard(activeMovieCard - 5))
             }
         }
-
     })
     useKey('ArrowLeft', () => {
         if (isOpen) return;
@@ -86,17 +86,14 @@ const Layout = () => {
     useEffect(() => {
         fetchMoviesDataRequest().then((response) => {
             setMovies(response.data);
+            setMoviesGenre(getGenderMovies(response.data))
             setMoviesFilter(response.data);
         });
     }, []);
 
     useEffect(() => {
-        const filterMovies = movies.reduce((acc: IMovieProps[], movie: IMovieProps) => {
-            const movieGenre = movie.genre_ids
-            const prepareGenre = isCheckGenre(movieGenre, GenresEnum.all) ? movieGenre : [...movieGenre, GenresEnum.all];
-            if (isCheckGenre(prepareGenre, genresDataExample[activeMenuIndex].name)) {acc = [...acc, movie]}
-            return acc
-        }, [])
+        const filterMovies = getFilterMovies(movies, activeMenuIndex, moviesGenre)
+
         setMoviesFilter(filterMovies)
     }, [activeMenuIndex])
 
@@ -108,7 +105,6 @@ const Layout = () => {
         setCurrentMovie(movie)
         toggleClose()
     }
-    const isCheckGenre = (array: string[], genre: GenresEnum) => array.some((el => el === genre))
 
     const handleClickButton = (index: number) => {
         dispatch(setActiveMenuIndex(index))
@@ -119,6 +115,7 @@ const Layout = () => {
             <SideBar
                 handleClickButton={handleClickButton}
                 active={activeMenuIndex}
+                moviesGenre={moviesGenre}
             />
             <WrapContent>
                 <Content movies={moviesFilter} openDetailPopup={openDetailPopup} />

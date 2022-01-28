@@ -1,5 +1,3 @@
-import {ButtonHTMLAttributes} from "react";
-
 export enum GenresEnum {
     action = "action",
     comedy = "comedy",
